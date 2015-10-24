@@ -171,10 +171,10 @@ int main()
 	h_C = (float *)calloc(size, sizeof(float));
 	h_D = (float *)malloc(size * sizeof(float));
 
-	printf("\nGenerating random floating point arrays.\n");
+	printf("\nGenerating random floating point arrays...\n");
 	init_array(h_A, size);
 	init_array(h_B, size);
-	printf("\nGeneration Complete.");
+	printf("Generation Complete.");
 
 	/*
 	printf("Array A:\n");
@@ -201,7 +201,14 @@ int main()
 	print_array(h_D, size);
 	*/
 
-	printf("\nCPU Compute Complete...\n");
+	printf("\nCPU Compute Complete\n");
+
+
+	//Free memory
+	free(h_A);
+	free(h_B);
+	free(h_C);
+	free(h_D);
 
 	printf("\n\nCuda Execution time: %f ms", executiontime);
 	printf("\n\nCPU Execution time: %f ms", cputime);
