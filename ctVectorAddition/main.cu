@@ -142,7 +142,7 @@ void vecAdd(float *h_A, float *h_B, float *h_C, int n)
 	cudaFree(d_C);
 }
 
-void cpuAdd(float *A, float *B, float *C, float *D, int n)
+void cpuAdd(float *A, float *B, float *D, int n)
 {
 	int i;
 	double start, stop;
@@ -171,7 +171,7 @@ int main()
 	h_A = (float *)malloc(size * sizeof(float));
 	h_B = (float *)malloc(size * sizeof(float));
 	h_C = (float *)calloc(size, sizeof(float));
-	h_D = (float *)malloc(size * sizeof(float));
+	h_D = (float *)calloc(size, sizeof(float));
 
 	printf("\nGenerating random floating point arrays...\n");
 	init_array(h_A, size);
@@ -192,8 +192,8 @@ int main()
 
 	printf("CUDA Compute Complete. \n\nStarting CPU Compute...");
 
-	//Execute CPU verification
-	cpuAdd(h_A, h_B, h_C, h_D, size);
+	//Execute CPU calculation
+	cpuAdd(h_A, h_B, h_D, size);
 
 	/*
 	printf("Array C: A+B\n");

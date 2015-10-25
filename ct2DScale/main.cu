@@ -36,9 +36,77 @@ __global__ void scaleKernel(float *d_in, float *d_out, int n, int m, float s)
 	}
 }
 
-int main()
+//CUDA Kernel Init and Call
+void ctScale(float **h_in, float **h_out, int n, int m, float s)
 {
 
+}
+
+//CPU Calculation
+void cpuScale(float **h_in, float **h_out, int n, int m, float s)
+{
+	int i, j;
+	double start, stop;
+
+	start = get_cpu_time();
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < m; j++)
+		{
+			h_out[i][j] = s * h_in[i][j];
+		}
+	}
+	stop = get_cpu_time();
+
+	cputime = stop - start;
+}
+
+int main()
+{
+	//Print Device
+	printdevices();
+
+	//Row/Column size - change depending on memory constraints
+	const int rowsize = 5000;			
+	const int colsize = 5000;
+
+	//Scale factor
+	const float scale = 2.25;
+
+	//Initialize Arrays: Allocate memory
+	int i;
+	float *h_A[rowsize], *h_B[rowsize], *h_C[rowsize];
+	for (i = 0; i < rowsize; i++)	h_A[i] = (float *)malloc(colsize * sizeof(float));
+	for (i = 0; i < rowsize; i++)	h_B[i] = (float *)calloc(colsize,  sizeof(float));
+	for (i = 0; i < rowsize; i++)	h_C[i] = (float *)calloc(colsize, sizeof(float));
+
+	//Initialize h_A - randomized float elements
+	printf("\nGenerating Random float point matrix...");
+	init_array(h_A, rowsize, colsize);
+	printf("\nGeneration complete.\n");
+
+	/*Optional printing of elements, don't use for large row/col size*/
+	/*
+	printf("\nA:\n");
+	print_array(h_A, rowsize, colsize);
+	*/
+
+	//CPU Calculation
+	printf("\n\nStarting CPU Calculation...");
+	cpuScale(h_A, h_C, rowsize, colsize, scale);
+	printf("\nCPU Calculation complete.\n");
+	
+	/*Optional printing of elements, don't use for large row/col size*/
+	/*
+	printf("\nA * %f:\n", scale);
+	print_array(h_C, rowsize, colsize);
+	*/
+
+	//Display performance comparision:
+	printf("\nCUDA Execution time: %f", executiontime);
+	printf("\nCPU Execution time %f", cputime);
+
+	printf("\n\n");
 	return 0;
 }
 
@@ -80,7 +148,7 @@ void print_array(float **arr, const int rows, const int cols)
 	{
 		for (j = 0; j < cols; j++)
 		{
-			printf("%f ", arr[i][j]);
+			printf("A[%d][%d]: %f ", i, j, arr[i][j]);
 
 		}
 		printf("\n");
