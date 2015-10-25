@@ -1,6 +1,8 @@
 
 /*
 Performance Comparisions (HSA vs pure CPU) for standard CUDA programs
+
+Floating point 1D Vector Addition
 */
 
 #include "cuda_runtime.h"

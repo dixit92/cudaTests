@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ctVectorAddition", "ctVectorAddition\ctVectorAddition.vcxproj", "{078C2261-CE88-43EE-80EA-9BBA2131E751}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ct2DScale", "ct2DScale\ct2DScale.vcxproj", "{B6B9F3D2-FC96-4B61-BE7F-E4AE50E47F48}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -21,6 +23,14 @@ Global
 		{078C2261-CE88-43EE-80EA-9BBA2131E751}.Release|Win32.Build.0 = Release|Win32
 		{078C2261-CE88-43EE-80EA-9BBA2131E751}.Release|x64.ActiveCfg = Release|x64
 		{078C2261-CE88-43EE-80EA-9BBA2131E751}.Release|x64.Build.0 = Release|x64
+		{B6B9F3D2-FC96-4B61-BE7F-E4AE50E47F48}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B6B9F3D2-FC96-4B61-BE7F-E4AE50E47F48}.Debug|Win32.Build.0 = Debug|Win32
+		{B6B9F3D2-FC96-4B61-BE7F-E4AE50E47F48}.Debug|x64.ActiveCfg = Debug|x64
+		{B6B9F3D2-FC96-4B61-BE7F-E4AE50E47F48}.Debug|x64.Build.0 = Debug|x64
+		{B6B9F3D2-FC96-4B61-BE7F-E4AE50E47F48}.Release|Win32.ActiveCfg = Release|Win32
+		{B6B9F3D2-FC96-4B61-BE7F-E4AE50E47F48}.Release|Win32.Build.0 = Release|Win32
+		{B6B9F3D2-FC96-4B61-BE7F-E4AE50E47F48}.Release|x64.ActiveCfg = Release|x64
+		{B6B9F3D2-FC96-4B61-BE7F-E4AE50E47F48}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
