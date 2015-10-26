@@ -39,7 +39,43 @@ __global__ void scaleKernel(float *d_in, float *d_out, int n, int m, float s)
 //CUDA Kernel Init and Call
 void ctScale(float **h_in, float **h_out, int n, int m, float s)
 {
+	//Initialize device var
+	cudaError_t err;
+	float **d_in, **d_out;
+	int dsize = n * m * sizeof(float);
 
+	//Time metrics
+	cudaEvent_t start, stop;
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+
+	//Device memory allocation for input and copy
+	err = cudaMalloc((void **)&d_in, dsize);
+	errcheck(err);
+	cudaMemcpy(d_in, h_in, dsize, cudaMemcpyHostToDevice);
+
+	//Device memory allocation for output
+	err = cudaMalloc((void **)&d_out, dsize);
+	errcheck(err);
+
+	//Kernel invoke, assume 2D Grids (size 16) each with 16 threads
+	dim3 DimGrid((n - 1) / 16 + 1, (m - 1) / 16 + 1, 1);
+	dim3 DimBlock(16, 16, 1);
+
+	cudaEventRecord(start);
+	scaleKernel<<<DimGrid,DimBlock>>>(d_in, d_out, n, m, s);
+	cudaEventRecord(stop);
+
+	//Copy output to host
+	cudaMemcpy(h_out, d_out, dsize, cudaMemcpyDeviceToHost);
+
+	//Syncronize and display time taken
+	cudaEventSynchronize(stop);
+	cudaEventElapsedTime(&executiontime, start, stop);
+
+	//Free memory from Device
+	cudaFree(d_in);
+	cudaFree(d_out);
 }
 
 //CPU Calculation
@@ -67,8 +103,8 @@ int main()
 	printdevices();
 
 	//Row/Column size - change depending on memory constraints
-	const int rowsize = 5000;			
-	const int colsize = 5000;
+	const int rowsize = 25000;			
+	const int colsize = 10000;
 
 	//Scale factor
 	const float scale = 2.25;
@@ -78,7 +114,7 @@ int main()
 	float *h_A[rowsize], *h_B[rowsize], *h_C[rowsize];
 	for (i = 0; i < rowsize; i++)	h_A[i] = (float *)malloc(colsize * sizeof(float));
 	for (i = 0; i < rowsize; i++)	h_B[i] = (float *)calloc(colsize,  sizeof(float));
-	for (i = 0; i < rowsize; i++)	h_C[i] = (float *)calloc(colsize, sizeof(float));
+	for (i = 0; i < rowsize; i++)	h_C[i] = (float *)calloc(colsize,  sizeof(float));
 
 	//Initialize h_A - randomized float elements
 	printf("\nGenerating Random float point matrix...");
@@ -91,6 +127,17 @@ int main()
 	print_array(h_A, rowsize, colsize);
 	*/
 
+	//CUDA Calculation
+	printf("\n\nStarting CUDA Calculation...");
+	ctScale(h_A, h_C, rowsize, colsize, scale);
+	printf("\CUDA Calculation complete.\n");
+
+	/*Optional printing of elements, don't use for large row/col size*/
+	/*
+	printf("\nB = A * %f:\n", scale);
+	print_array(h_B, rowsize, colsize);
+	*/
+
 	//CPU Calculation
 	printf("\n\nStarting CPU Calculation...");
 	cpuScale(h_A, h_C, rowsize, colsize, scale);
@@ -98,13 +145,18 @@ int main()
 	
 	/*Optional printing of elements, don't use for large row/col size*/
 	/*
-	printf("\nA * %f:\n", scale);
+	printf("\nC = A * %f:\n", scale);
 	print_array(h_C, rowsize, colsize);
 	*/
 
 	//Display performance comparision:
-	printf("\nCUDA Execution time: %f", executiontime);
-	printf("\nCPU Execution time %f", cputime);
+	printf("\nCUDA Execution time: %f ms", executiontime);
+	printf("\nCPU Execution time: %f ms", cputime*1000);
+
+	//Free memory
+	free(h_A);
+	free(h_B);
+	free(h_C);
 
 	printf("\n\n");
 	return 0;

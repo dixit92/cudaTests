@@ -213,7 +213,7 @@ int main()
 	free(h_D);
 
 	printf("\n\nCuda Execution time: %f ms", executiontime);
-	printf("\n\nCPU Execution time: %f ms", cputime);
+	printf("\n\nCPU Execution time: %f ms", cputime*1000);
 	printf("\n\n");
 	return 0;
 }
