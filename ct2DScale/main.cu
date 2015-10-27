@@ -13,8 +13,10 @@ Floating point 2D Matrix Scaling
 
 float executiontime = 0;
 double cputime = 0;
+double walltime = 0;
 
 double get_cpu_time();
+double get_wall_time();
 void init_array(float **, const int, const int);
 void print_array(float **, const int, const int);
 void errcheck(cudaError_t);
@@ -41,7 +43,7 @@ void ctScale(float **h_in, float **h_out, int n, int m, float s)
 {
 	//Initialize device var
 	cudaError_t err;
-	float **d_in, **d_out;
+	float *d_in, *d_out;
 	int dsize = n * m * sizeof(float);
 
 	//Time metrics
@@ -82,8 +84,9 @@ void ctScale(float **h_in, float **h_out, int n, int m, float s)
 void cpuScale(float **h_in, float **h_out, int n, int m, float s)
 {
 	int i, j;
-	double start, stop;
+	double start, stop, wstart, wstop;
 
+	wstart = get_wall_time();
 	start = get_cpu_time();
 	for (i = 0; i < n; i++)
 	{
@@ -93,8 +96,10 @@ void cpuScale(float **h_in, float **h_out, int n, int m, float s)
 		}
 	}
 	stop = get_cpu_time();
+	wstop = get_wall_time();
 
 	cputime = stop - start;
+	walltime = wstop - wstart;
 }
 
 int main()
@@ -151,7 +156,8 @@ int main()
 
 	//Display performance comparision:
 	printf("\nCUDA Execution time: %f ms", executiontime);
-	printf("\nCPU Execution time: %f ms", cputime*1000);
+	printf("\nCPU Process Execution time: %f ms", cputime*1000);
+	printf("\nCPU Real Execution time: %f ms", walltime * 1000);
 
 	//Free memory
 	free(h_A);
@@ -160,6 +166,20 @@ int main()
 
 	printf("\n\n");
 	return 0;
+}
+
+//Windows Wall Time
+double get_wall_time(){
+	LARGE_INTEGER time, freq;
+	if (!QueryPerformanceFrequency(&freq)){
+		//  Handle error
+		return 0;
+	}
+	if (!QueryPerformanceCounter(&time)){
+		//  Handle error
+		return 0;
+	}
+	return (double)time.QuadPart / freq.QuadPart;
 }
 
 //Windows CPU Time

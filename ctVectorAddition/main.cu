@@ -14,6 +14,21 @@ Floating point 1D Vector Addition
 
 float executiontime = 0;
 double cputime = 0;
+double walltime = 0;
+
+//Windows Wall Time
+double get_wall_time(){
+	LARGE_INTEGER time, freq;
+	if (!QueryPerformanceFrequency(&freq)){
+		//  Handle error
+		return 0;
+	}
+	if (!QueryPerformanceCounter(&time)){
+		//  Handle error
+		return 0;
+	}
+	return (double)time.QuadPart / freq.QuadPart;
+}
 
 //Windows CPU Time
 double get_cpu_time(){
@@ -145,16 +160,19 @@ void vecAdd(float *h_A, float *h_B, float *h_C, int n)
 void cpuAdd(float *A, float *B, float *D, int n)
 {
 	int i;
-	double start, stop;
+	double start, stop, wstart, wstop;
 
+	wstart = get_wall_time();
 	start = get_cpu_time();
 	for (i = 0; i < n; i++)
 	{
 		D[i] = A[i] + B[i];
 	}
 	stop = get_cpu_time();
-	cputime = stop - start;
+	wstop = get_wall_time();
 
+	cputime = stop - start;
+	walltime = wstop - wstart;
 }
 
 int main()
@@ -213,7 +231,8 @@ int main()
 	free(h_D);
 
 	printf("\n\nCuda Execution time: %f ms", executiontime);
-	printf("\n\nCPU Execution time: %f ms", cputime*1000);
+	printf("\n\nCPU Process Execution time: %f ms", cputime*1000);
+	printf("\n\nCPU Real Execution time: %f ms", walltime * 1000);
 	printf("\n\n");
 	return 0;
 }
