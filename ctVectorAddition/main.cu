@@ -183,7 +183,7 @@ int main()
 
 	//Number of array elements
 	//Change depending on memory constraints
-	const int size = 99999999;
+	const int size = 9999999;
 	
 	float *h_A, *h_B, *h_C, *h_D;
 	h_A = (float *)malloc(size * sizeof(float));

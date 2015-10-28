@@ -2,6 +2,8 @@
 Performance Comparisions (HSA vs pure CPU) for standard CUDA programs
 
 Floating point 2D Matrix Scaling
+
+Uses flat array structure
 */
 
 #include "cuda_runtime.h"
@@ -17,8 +19,8 @@ double walltime = 0;
 
 double get_cpu_time();
 double get_wall_time();
-void init_array(float **, const int, const int);
-void print_array(float **, const int, const int);
+void init_array(float *, const int, const int);
+void print_array(float *, const int, const int);
 void errcheck(cudaError_t);
 void printdevices();
 
@@ -39,7 +41,7 @@ __global__ void scaleKernel(float *d_in, float *d_out, int n, int m, float s)
 }
 
 //CUDA Kernel Init and Call
-void ctScale(float **h_in, float **h_out, int n, int m, float s)
+void ctScale(float *h_in, float *h_out, int n, int m, float s)
 {
 	//Initialize device var
 	cudaError_t err;
@@ -81,7 +83,7 @@ void ctScale(float **h_in, float **h_out, int n, int m, float s)
 }
 
 //CPU Calculation
-void cpuScale(float **h_in, float **h_out, int n, int m, float s)
+void cpuScale(float *h_in, float *h_out, int n, int m, float s)
 {
 	int i, j;
 	double start, stop, wstart, wstop;
@@ -92,7 +94,7 @@ void cpuScale(float **h_in, float **h_out, int n, int m, float s)
 	{
 		for (j = 0; j < m; j++)
 		{
-			h_out[i][j] = s * h_in[i][j];
+			h_out[i*m + j] = s * h_in[i*m + j];
 		}
 	}
 	stop = get_cpu_time();
@@ -108,18 +110,17 @@ int main()
 	printdevices();
 
 	//Row/Column size - change depending on memory constraints
-	const int rowsize = 25000;			
-	const int colsize = 10000;
+	const int rowsize = 10;			
+	const int colsize = 5;
 
 	//Scale factor
 	const float scale = 2.25;
 
 	//Initialize Arrays: Allocate memory
-	int i;
-	float *h_A[rowsize], *h_B[rowsize], *h_C[rowsize];
-	for (i = 0; i < rowsize; i++)	h_A[i] = (float *)malloc(colsize * sizeof(float));
-	for (i = 0; i < rowsize; i++)	h_B[i] = (float *)calloc(colsize,  sizeof(float));
-	for (i = 0; i < rowsize; i++)	h_C[i] = (float *)calloc(colsize,  sizeof(float));
+	float *h_A, *h_B, *h_C;
+	h_A = (float *)malloc(rowsize * colsize * sizeof(float));
+	h_B = (float *)calloc(rowsize * colsize,  sizeof(float));
+	h_C = (float *)calloc(rowsize * colsize,  sizeof(float));
 
 	//Initialize h_A - randomized float elements
 	printf("\nGenerating Random float point matrix...");
@@ -127,21 +128,21 @@ int main()
 	printf("\nGeneration complete.\n");
 
 	/*Optional printing of elements, don't use for large row/col size*/
-	/*
+	
 	printf("\nA:\n");
 	print_array(h_A, rowsize, colsize);
-	*/
+	
 
 	//CUDA Calculation
 	printf("\n\nStarting CUDA Calculation...");
 	ctScale(h_A, h_C, rowsize, colsize, scale);
-	printf("\CUDA Calculation complete.\n");
+	printf("\nCUDA Calculation complete.\n");
 
 	/*Optional printing of elements, don't use for large row/col size*/
-	/*
+	
 	printf("\nB = A * %f:\n", scale);
 	print_array(h_B, rowsize, colsize);
-	*/
+	
 
 	//CPU Calculation
 	printf("\n\nStarting CPU Calculation...");
@@ -149,10 +150,10 @@ int main()
 	printf("\nCPU Calculation complete.\n");
 	
 	/*Optional printing of elements, don't use for large row/col size*/
-	/*
+	
 	printf("\nC = A * %f:\n", scale);
 	print_array(h_C, rowsize, colsize);
-	*/
+	
 
 	//Display performance comparision:
 	printf("\nCUDA Execution time: %f ms", executiontime);
@@ -198,7 +199,7 @@ double get_cpu_time(){
 }
 
 //Populates arr of rows, cols with random elements
-void init_array(float **arr, const int rows, const int cols)
+void init_array(float *arr, const int rows, const int cols)
 {
 
 	int i, j;
@@ -206,21 +207,21 @@ void init_array(float **arr, const int rows, const int cols)
 	{
 		for (j = 0; j < cols; j++)
 		{
-			arr[i][j] = (rand() / float(RAND_MAX));
+			arr[i*cols + j] = (rand() / float(RAND_MAX));
 		}
 	}
 }
 
 
 //Prints arr of rows, cols
-void print_array(float **arr, const int rows, const int cols)
+void print_array(float *arr, const int rows, const int cols)
 {
 	int i, j;
 	for (i = 0; i < rows; i++)
 	{
 		for (j = 0; j < cols; j++)
 		{
-			printf("A[%d][%d]: %f ", i, j, arr[i][j]);
+			printf("A[%d][%d]: %f ", i, j, arr[i*cols + j]);
 
 		}
 		printf("\n");
