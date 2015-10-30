@@ -110,11 +110,11 @@ int main()
 	printdevices();
 
 	//Row/Column size - change depending on memory constraints
-	const int rowsize = 10;			
-	const int colsize = 5;
+	const int rowsize = 20000;			
+	const int colsize = 2000;
 
 	//Scale factor
-	const float scale = 2.25;
+	const float scale = 2.6548;
 
 	//Initialize Arrays: Allocate memory
 	float *h_A, *h_B, *h_C;
@@ -128,21 +128,21 @@ int main()
 	printf("\nGeneration complete.\n");
 
 	/*Optional printing of elements, don't use for large row/col size*/
-	
+	/*
 	printf("\nA:\n");
 	print_array(h_A, rowsize, colsize);
-	
+	*/
 
 	//CUDA Calculation
 	printf("\n\nStarting CUDA Calculation...");
-	ctScale(h_A, h_C, rowsize, colsize, scale);
+	ctScale(h_A, h_B, rowsize, colsize, scale);
 	printf("\nCUDA Calculation complete.\n");
 
 	/*Optional printing of elements, don't use for large row/col size*/
-	
+	/*
 	printf("\nB = A * %f:\n", scale);
 	print_array(h_B, rowsize, colsize);
-	
+	*/
 
 	//CPU Calculation
 	printf("\n\nStarting CPU Calculation...");
@@ -150,14 +150,14 @@ int main()
 	printf("\nCPU Calculation complete.\n");
 	
 	/*Optional printing of elements, don't use for large row/col size*/
-	
+	/*
 	printf("\nC = A * %f:\n", scale);
 	print_array(h_C, rowsize, colsize);
-	
+	*/
 
 	//Display performance comparision:
 	printf("\nCUDA Execution time: %f ms", executiontime);
-	printf("\nCPU Process Execution time: %f ms", cputime*1000);
+	printf("\nCPU Process Execution time: %f ms", cputime * 1000);
 	printf("\nCPU Real Execution time: %f ms", walltime * 1000);
 
 	//Free memory
