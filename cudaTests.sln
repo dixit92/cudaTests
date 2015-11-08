@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ctVectorAddition", "ctVecto
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ct2DScale", "ct2DScale\ct2DScale.vcxproj", "{B6B9F3D2-FC96-4B61-BE7F-E4AE50E47F48}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ct2DMatrixMul", "ct2DMatrixMul\ct2DMatrixMul.vcxproj", "{C13C7014-9AE0-4C8A-9AA5-77FBE43F2084}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -31,6 +33,14 @@ Global
 		{B6B9F3D2-FC96-4B61-BE7F-E4AE50E47F48}.Release|Win32.Build.0 = Release|Win32
 		{B6B9F3D2-FC96-4B61-BE7F-E4AE50E47F48}.Release|x64.ActiveCfg = Release|x64
 		{B6B9F3D2-FC96-4B61-BE7F-E4AE50E47F48}.Release|x64.Build.0 = Release|x64
+		{C13C7014-9AE0-4C8A-9AA5-77FBE43F2084}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C13C7014-9AE0-4C8A-9AA5-77FBE43F2084}.Debug|Win32.Build.0 = Debug|Win32
+		{C13C7014-9AE0-4C8A-9AA5-77FBE43F2084}.Debug|x64.ActiveCfg = Debug|x64
+		{C13C7014-9AE0-4C8A-9AA5-77FBE43F2084}.Debug|x64.Build.0 = Debug|x64
+		{C13C7014-9AE0-4C8A-9AA5-77FBE43F2084}.Release|Win32.ActiveCfg = Release|Win32
+		{C13C7014-9AE0-4C8A-9AA5-77FBE43F2084}.Release|Win32.Build.0 = Release|Win32
+		{C13C7014-9AE0-4C8A-9AA5-77FBE43F2084}.Release|x64.ActiveCfg = Release|x64
+		{C13C7014-9AE0-4C8A-9AA5-77FBE43F2084}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

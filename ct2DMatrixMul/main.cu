@@ -26,7 +26,129 @@ void print_array(float *, const int, const int);
 void errcheck(cudaError_t);
 void printdevices();
 
+//CPU-based implementation of Naive (O(n^3) Matrix Multiplication)
+void cpuMatMul(float *A, float *B, float *C, int m, int n, int k)
+{
+	//Timers
+	double start, stop, wstart, wstop;
 
+	//Being Matmul
+	wstart = get_wall_time();
+	start = get_cpu_time();
+
+	for (int row = 0; row < m; row++)
+	{
+		for (int col = 0; col < k; col++)
+		{
+			float sum = 0;
+
+			for (int i = 0; i < n; i++)
+			{
+				float a = A[row*n + i];
+				float b = B[col + i*k];
+				sum = sum + a * b; 
+			}
+
+			C[row*k + col] = sum;
+		}
+	}
+
+	stop = get_cpu_time();
+	wstop = get_wall_time();
+	//end Matmul
+
+	//calculate time
+	cputime = stop - start;
+	walltime = wstop - wstart;
+}
+
+int main()
+{
+	//Print Device
+	printdevices();
+
+	///*Optional printing of elements, don't use for large row/col size*/
+	bool PrintEle = false;
+
+	//Row/Column size - change depending on memory constraints
+	//We assume multiplication of Matrices A and B with a resultant C (for CUDA) and D (for CPU)
+	//A = m x n (rows x cols)
+	//B = n x k (rows x cols)
+	//C = m x k (rows x cols) (result of multiplying A and B)
+
+	const int m = 1000;			
+	const int n = 5500;
+	const int k = 250;
+
+	//Initialize Arrays: Allocate memory
+	float *h_A, *h_B, *h_C, *h_D;
+	h_A = (float *)malloc(m * n * sizeof(float));
+	h_B = (float *)malloc(n * k * sizeof(float));
+	h_C = (float *)calloc(m * k,  sizeof(float));
+	h_D = (float *)calloc(m * k,  sizeof(float));
+
+	//Initialize h_A (m x n) - randomized float elements
+	printf("\nGenerating Random float point matrix A...");
+	init_array(h_A, m, n);
+	printf("\nGeneration complete.\n");
+
+	/*Optional printing of elements, don't use for large row/col size*/
+	if (PrintEle)
+	{
+		printf("\nA:\n");
+		print_array(h_A, m, n);
+	}
+
+	//Initialize h_B (n x k) - randomized float elements
+	printf("\nGenerating Random float point matrix B...");
+	init_array(h_B, n, k);
+	printf("\nGeneration complete.\n");
+
+	/*Optional printing of elements, don't use for large row/col size*/
+	if (PrintEle)
+	{
+		printf("\nB:\n");
+		print_array(h_B, n, k);
+	}
+
+	/*
+	//CUDA Calculation
+	printf("\n\nStarting CUDA Calculation...");
+	ctScale(h_A, h_B, rowsize, colsize, scale);
+	printf("\nCUDA Calculation complete.\n");
+
+	/*Optional printing of elements, don't use for large row/col size
+	/*
+	printf("\nB = A * %f:\n", scale);
+	print_array(h_B, rowsize, colsize);
+	*/
+	
+
+	//CPU Calculation
+	printf("\n\nStarting CPU Calculation...");
+	cpuMatMul(h_A, h_B, h_D, m, n, k);
+	printf("\nCPU Calculation complete.\n");
+	
+	/*Optional printing of elements, don't use for large row/col size*/
+	if (PrintEle)
+	{
+		printf("\nD = A * B:\n");
+		print_array(h_D, m, k);
+	}
+
+	//Display performance comparision:
+//	printf("\nCUDA Execution time: %f ms", executiontime);
+	printf("\nCPU Process Execution time: %f ms", cputime * 1000);
+	printf("\nCPU Real Execution time: %f ms", walltime * 1000);
+
+	//Free memory
+	free(h_A);
+	free(h_B);
+	free(h_C);
+
+	printf("\n\n");
+	return 0;
+}
 
 //Windows Wall Time
 double get_wall_time(){
