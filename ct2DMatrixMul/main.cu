@@ -15,6 +15,8 @@ Uses flat array structure
 #include <Windows.h>
 #include <stdio.h>
 
+#define TILEWIDTH 16
+
 float executiontime = 0;
 double cputime = 0;
 double walltime = 0;
@@ -25,6 +27,71 @@ void init_array(float *, const int, const int);
 void print_array(float *, const int, const int);
 void errcheck(cudaError_t);
 void printdevices();
+
+//CUDA Kernel
+__global__ void MatMulKernel(float *A, float *B, float *C, int m, int n, int k)
+{
+	int row = blockIdx.y * blockDim.y + threadIdx.y;
+	int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+	if ((row < m) && (col < k))
+	{
+		float cvalue = 0.0;
+
+		for (int i = 0; i < n; i++)
+		{
+			cvalue = cvalue + A[row*n + i] + B[col + i*k];
+		}
+
+		C[row*k + col] = cvalue;
+	}
+}
+
+//Kernel Invocation function
+void ct2DMatrixMul(float *h_A, float *h_B, float *h_C, int m, int n, int k)
+{
+	//Initialize device var
+	cudaError_t err;
+	float *d_A, *d_B, *d_C;
+
+	//Time metrics
+	cudaEvent_t start, stop;
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+
+	//Device memory allocation 
+	err = cudaMalloc((void **)&d_A, m * n * sizeof(float));
+	errcheck(err);
+	cudaMemcpy(d_A, h_A, m * n * sizeof(float), cudaMemcpyHostToDevice);
+
+	err = cudaMalloc((void **)&d_B, n * k * sizeof(float));
+	errcheck(err);
+	cudaMemcpy(d_B, h_B, n * k * sizeof(float), cudaMemcpyHostToDevice);
+
+	//Device memory allocation for output
+	err = cudaMalloc((void **)&d_C, m * k * sizeof(float));
+	errcheck(err);
+
+	//Kernel invoke, assume 2D Grids (size 16) each with 16 threads
+	dim3 DimGrid((k - 1) / TILEWIDTH + 1, (m - 1) / TILEWIDTH + 1, 1);
+	dim3 DimBlock(TILEWIDTH, TILEWIDTH, 1);
+
+	cudaEventRecord(start);
+	MatMulKernel <<<DimGrid, DimBlock >>>(d_A, d_B, d_C, n, m, k);
+	cudaEventRecord(stop);
+
+	//Copy output to host
+	cudaMemcpy(h_C, d_C, m * k * sizeof(float), cudaMemcpyDeviceToHost);
+
+	//Syncronize and display time taken
+	cudaEventSynchronize(stop);
+	cudaEventElapsedTime(&executiontime, start, stop);
+
+	//Free memory from Device
+	cudaFree(d_A);
+	cudaFree(d_B);
+	cudaFree(d_C);
+}
 
 //CPU-based implementation of Naive (O(n^3) Matrix Multiplication)
 void cpuMatMul(float *A, float *B, float *C, int m, int n, int k)
@@ -68,7 +135,7 @@ int main()
 	printdevices();
 
 	///*Optional printing of elements, don't use for large row/col size*/
-	bool PrintEle = false;
+	bool PrintEle = true;
 
 	//Row/Column size - change depending on memory constraints
 	//We assume multiplication of Matrices A and B with a resultant C (for CUDA) and D (for CPU)
@@ -76,9 +143,9 @@ int main()
 	//B = n x k (rows x cols)
 	//C = m x k (rows x cols) (result of multiplying A and B)
 
-	const int m = 1000;			
-	const int n = 5500;
-	const int k = 250;
+	const int m = 3;			
+	const int n = 4;
+	const int k = 5;
 
 	//Initialize Arrays: Allocate memory
 	float *h_A, *h_B, *h_C, *h_D;
@@ -111,17 +178,17 @@ int main()
 		print_array(h_B, n, k);
 	}
 
-	/*
+	
 	//CUDA Calculation
 	printf("\n\nStarting CUDA Calculation...");
-	ctScale(h_A, h_B, rowsize, colsize, scale);
+	ct2DMatrixMul(h_A, h_B, h_C, m, n, k);
 	printf("\nCUDA Calculation complete.\n");
 
-	/*Optional printing of elements, don't use for large row/col size
-	/*
-	printf("\nB = A * %f:\n", scale);
-	print_array(h_B, rowsize, colsize);
-	*/
+	//Optional printing of elements, don't use for large row/col size
+	
+	printf("\nC = A . B:\n");
+	print_array(h_C, m, k);
+	
 	
 
 	//CPU Calculation
@@ -132,12 +199,12 @@ int main()
 	/*Optional printing of elements, don't use for large row/col size*/
 	if (PrintEle)
 	{
-		printf("\nD = A * B:\n");
+		printf("\nD = A . B:\n");
 		print_array(h_D, m, k);
 	}
 
 	//Display performance comparision:
-//	printf("\nCUDA Execution time: %f ms", executiontime);
+	printf("\nCUDA Execution time: %f ms", executiontime);
 	printf("\nCPU Process Execution time: %f ms", cputime * 1000);
 	printf("\nCPU Real Execution time: %f ms", walltime * 1000);
 
