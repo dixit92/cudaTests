@@ -111,7 +111,7 @@ int main()
 
 	//Row/Column size - change depending on memory constraints
 	const int rowsize = 20000;			
-	const int colsize = 2000;
+	const int colsize = 20000;
 
 	//Scale factor
 	const float scale = 2.6548;
@@ -166,6 +166,7 @@ int main()
 	free(h_C);
 
 	printf("\n\n");
+	system("pause");
 	return 0;
 }
 

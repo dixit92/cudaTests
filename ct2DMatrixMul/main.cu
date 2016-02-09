@@ -38,9 +38,9 @@ __global__ void MatMulKernel(float *A, float *B, float *C, int m, int n, int k)
 	{
 		float cvalue = 0.0;
 
-		for (int i = 0; i < n; i++)
+		for (int i = 0; i < n; ++i)
 		{
-			cvalue = cvalue + A[row*n + i] + B[col + i*k];
+			cvalue = cvalue + A[row*n + i] * B[col + i*k];
 		}
 
 		C[row*k + col] = cvalue;
@@ -77,7 +77,7 @@ void ct2DMatrixMul(float *h_A, float *h_B, float *h_C, int m, int n, int k)
 	dim3 DimBlock(TILEWIDTH, TILEWIDTH, 1);
 
 	cudaEventRecord(start);
-	MatMulKernel <<<DimGrid, DimBlock >>>(d_A, d_B, d_C, n, m, k);
+	MatMulKernel <<<DimGrid, DimBlock >>>(d_A, d_B, d_C, m, n, k);
 	cudaEventRecord(stop);
 
 	//Copy output to host
@@ -135,7 +135,7 @@ int main()
 	printdevices();
 
 	///*Optional printing of elements, don't use for large row/col size*/
-	bool PrintEle = true;
+	bool PrintEle = false;
 
 	//Row/Column size - change depending on memory constraints
 	//We assume multiplication of Matrices A and B with a resultant C (for CUDA) and D (for CPU)
@@ -143,9 +143,9 @@ int main()
 	//B = n x k (rows x cols)
 	//C = m x k (rows x cols) (result of multiplying A and B)
 
-	const int m = 3;			
-	const int n = 4;
-	const int k = 5;
+	const int m = 2000;			
+	const int n = 2000;
+	const int k = 2000;
 
 	//Initialize Arrays: Allocate memory
 	float *h_A, *h_B, *h_C, *h_D;
@@ -185,10 +185,11 @@ int main()
 	printf("\nCUDA Calculation complete.\n");
 
 	//Optional printing of elements, don't use for large row/col size
-	
-	printf("\nC = A . B:\n");
-	print_array(h_C, m, k);
-	
+	if (PrintEle)
+	{
+		printf("\nC = A . B:\n");
+		print_array(h_C, m, k);
+	}
 	
 
 	//CPU Calculation
@@ -214,6 +215,7 @@ int main()
 	free(h_C);
 
 	printf("\n\n");
+	system("pause");
 	return 0;
 }
 

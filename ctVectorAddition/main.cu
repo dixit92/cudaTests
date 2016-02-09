@@ -234,5 +234,7 @@ int main()
 	printf("\n\nCPU Process Execution time: %f ms", cputime*1000);
 	printf("\n\nCPU Real Execution time: %f ms", walltime * 1000);
 	printf("\n\n");
+	
+	system("pause");
 	return 0;
 }
