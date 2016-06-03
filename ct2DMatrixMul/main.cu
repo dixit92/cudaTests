@@ -15,6 +15,7 @@ Uses flat array structure
 #include <Windows.h>
 #include <stdio.h>
 
+//Default - 16 threads in a block, 16 blocks in a grid
 #define TILEWIDTH 16
 
 float executiontime = 0;
@@ -143,9 +144,9 @@ int main()
 	//B = n x k (rows x cols)
 	//C = m x k (rows x cols) (result of multiplying A and B)
 
-	const int m = 2000;			
+	const int m = 5000;			
 	const int n = 2000;
-	const int k = 2000;
+	const int k = 3000;
 
 	//Initialize Arrays: Allocate memory
 	float *h_A, *h_B, *h_C, *h_D;
