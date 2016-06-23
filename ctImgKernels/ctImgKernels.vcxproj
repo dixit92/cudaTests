@@ -157,7 +157,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="mainsrc.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="jpeghandle.h" />
+    <ClInclude Include="CImg.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
