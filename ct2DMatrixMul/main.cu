@@ -29,7 +29,17 @@ void print_array(float *, const int, const int);
 void errcheck(cudaError_t);
 void printdevices();
 
-//CUDA Kernel
+//CUDA kernel for shared memory tiled multiply (FRAMEWORK)
+__global__ void MatMulTiledKernel(float *A, float *B, float *C, int m, int n, int k)
+{
+	//Shared memory for tiled MatMul 
+	//Shared memory on GPU is much faster than GPU global mem
+	__shared__ float ds_A[TILEWIDTH][TILEWIDTH];
+	__shared__ float ds_B[TILEWIDTH][TILEWIDTH];
+
+}
+
+//CUDA Kernel for simple non-shared multiply
 __global__ void MatMulKernel(float *A, float *B, float *C, int m, int n, int k)
 {
 	int row = blockIdx.y * blockDim.y + threadIdx.y;
@@ -48,7 +58,7 @@ __global__ void MatMulKernel(float *A, float *B, float *C, int m, int n, int k)
 	}
 }
 
-//Kernel Invocation function
+//Kernel Invocation function for simple CUDA multiply
 void ct2DMatrixMul(float *h_A, float *h_B, float *h_C, int m, int n, int k)
 {
 	//Initialize device var
