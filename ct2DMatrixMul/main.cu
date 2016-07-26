@@ -39,6 +39,12 @@ __global__ void MatMulTiledKernel(float *A, float *B, float *C, int m, int n, in
 
 }
 
+//Kernel Invocation function for tiled/shared memory multiply (FRAMEWORK)
+void ctTiledMatrixMul(float *h_A, float *h_B, float *h_C, int m, int n, int k)
+{
+
+}
+
 //CUDA Kernel for simple non-shared multiply
 __global__ void MatMulKernel(float *A, float *B, float *C, int m, int n, int k)
 {
@@ -159,11 +165,12 @@ int main()
 	const int k = 3000;
 
 	//Initialize Arrays: Allocate memory
-	float *h_A, *h_B, *h_C, *h_D;
+	float *h_A, *h_B, *h_C, *h_D, *h_T;
 	h_A = (float *)malloc(m * n * sizeof(float));
 	h_B = (float *)malloc(n * k * sizeof(float));
 	h_C = (float *)calloc(m * k,  sizeof(float));
 	h_D = (float *)calloc(m * k,  sizeof(float));
+	h_T = (float *)calloc(m * k,  sizeof(float));
 
 	//Initialize h_A (m x n) - randomized float elements
 	printf("\nGenerating Random float point matrix A...");
@@ -190,8 +197,8 @@ int main()
 	}
 
 	
-	//CUDA Calculation
-	printf("\n\nStarting CUDA Calculation...");
+	//CUDA Calculation (Naive)
+	printf("\n\nStarting basic CUDA Calculation...");
 	ct2DMatrixMul(h_A, h_B, h_C, m, n, k);
 	printf("\nCUDA Calculation complete.\n");
 
@@ -202,6 +209,18 @@ int main()
 		print_array(h_C, m, k);
 	}
 	
+
+	//CUDA Calculation (using CUDA Sharedmem)
+	printf("\n\nStarting optimized CUDA Calculation...");
+	ctTiledMatrixMul(h_A, h_B, h_T, m, n, k);
+	printf("\nCUDA Calculation complete.\n");
+
+	//Optional printing of elements, don't use for large row/col size
+	if (PrintEle)
+	{
+		printf("\nC = A . B:\n");
+		print_array(h_T, m, k);
+	}
 
 	//CPU Calculation
 	printf("\n\nStarting CPU Calculation...");
