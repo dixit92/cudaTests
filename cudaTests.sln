@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ct2DMatrixMul", "ct2DMatrix
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ctImgKernels", "ctImgKernels\ctImgKernels.vcxproj", "{712550FC-B096-4ADB-8E06-DF627B208DAF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ctGradDesc", "ctGradDesc\ctGradDesc.vcxproj", "{788CC7AE-F7C8-490A-8A1C-1D9FFE663F29}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -51,6 +53,14 @@ Global
 		{712550FC-B096-4ADB-8E06-DF627B208DAF}.Release|Win32.Build.0 = Release|Win32
 		{712550FC-B096-4ADB-8E06-DF627B208DAF}.Release|x64.ActiveCfg = Release|x64
 		{712550FC-B096-4ADB-8E06-DF627B208DAF}.Release|x64.Build.0 = Release|x64
+		{788CC7AE-F7C8-490A-8A1C-1D9FFE663F29}.Debug|Win32.ActiveCfg = Debug|Win32
+		{788CC7AE-F7C8-490A-8A1C-1D9FFE663F29}.Debug|Win32.Build.0 = Debug|Win32
+		{788CC7AE-F7C8-490A-8A1C-1D9FFE663F29}.Debug|x64.ActiveCfg = Debug|x64
+		{788CC7AE-F7C8-490A-8A1C-1D9FFE663F29}.Debug|x64.Build.0 = Debug|x64
+		{788CC7AE-F7C8-490A-8A1C-1D9FFE663F29}.Release|Win32.ActiveCfg = Release|Win32
+		{788CC7AE-F7C8-490A-8A1C-1D9FFE663F29}.Release|Win32.Build.0 = Release|Win32
+		{788CC7AE-F7C8-490A-8A1C-1D9FFE663F29}.Release|x64.ActiveCfg = Release|x64
+		{788CC7AE-F7C8-490A-8A1C-1D9FFE663F29}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
