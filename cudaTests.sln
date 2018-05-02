@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ctImgKernels", "ctImgKernel
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ctGradDesc", "ctGradDesc\ctGradDesc.vcxproj", "{788CC7AE-F7C8-490A-8A1C-1D9FFE663F29}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ctNxNPercolation", "ctNxNPercolation\ctNxNPercolation.vcxproj", "{2DC17F50-7A73-48FA-B239-A9A8353C2255}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -61,6 +63,14 @@ Global
 		{788CC7AE-F7C8-490A-8A1C-1D9FFE663F29}.Release|Win32.Build.0 = Release|Win32
 		{788CC7AE-F7C8-490A-8A1C-1D9FFE663F29}.Release|x64.ActiveCfg = Release|x64
 		{788CC7AE-F7C8-490A-8A1C-1D9FFE663F29}.Release|x64.Build.0 = Release|x64
+		{2DC17F50-7A73-48FA-B239-A9A8353C2255}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2DC17F50-7A73-48FA-B239-A9A8353C2255}.Debug|Win32.Build.0 = Debug|Win32
+		{2DC17F50-7A73-48FA-B239-A9A8353C2255}.Debug|x64.ActiveCfg = Debug|x64
+		{2DC17F50-7A73-48FA-B239-A9A8353C2255}.Debug|x64.Build.0 = Debug|x64
+		{2DC17F50-7A73-48FA-B239-A9A8353C2255}.Release|Win32.ActiveCfg = Release|Win32
+		{2DC17F50-7A73-48FA-B239-A9A8353C2255}.Release|Win32.Build.0 = Release|Win32
+		{2DC17F50-7A73-48FA-B239-A9A8353C2255}.Release|x64.ActiveCfg = Release|x64
+		{2DC17F50-7A73-48FA-B239-A9A8353C2255}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
